@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Quiz Application</title>
+  <style>
+    body {
+  font-family: sans-serif;
+  background-color: #d81818;
+}
+
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #008cba;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #006080;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Quiz Application</h1>
+    <div v-if="!quizStarted">
+      <p>Click the button to start the quiz:</p>
+      <button @click="startQuiz">Start Quiz</button>
+    </div>
+    <div v-else>
+      <p v-if="currentQuestionIndex < questions.length">{{ questions[currentQuestionIndex].question }}</p>
+      <ul v-if="currentQuestionIndex < questions.length">
+        <li v-for="(answer, index) in questions[currentQuestionIndex].answers" :key="index">
+          <label>
+            <input type="radio" :value="answer" v-model="selectedAnswer">{{ answer }}
+          </label>
+        </li>
+      </ul>
+      <p v-if="currentQuestionIndex < questions.length">
+        <button @click="checkAnswer">Check Answer</button>
+      </p>
+      <p v-else>
+        <strong>Quiz complete!</strong>
+      </p>
+    </div>
+    <div v-if="quizComplete">
+      <p>You answered {{ numCorrect }} out of {{ questions.length }} questions correctly.</p>
+    </div>
+  </div>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        quizStarted: false,
+        currentQuestionIndex: 0,
+        selectedAnswer: null,
+        numCorrect: 0,
+        numWrong: 0,
+        questions: [
+          {
+            question: 'What is the capital of Tamil Nadu?',
+            answers: ['Mumbai', 'Kolkata', 'Chennai', 'Bengaluru'],
+            correctAnswer: 'Chennai'
+          },
+          {
+            question: 'What is the beach in Chennai?',
+            answers: ['Marina', 'Elliots', 'ECR', 'Blue beach'],
+            correctAnswer: 'Marina'
+          },
+          {
+            question: 'In which city is the famous statue of Christ the Redeemer located?',
+            answers: ['Rio de Janeiro', 'Buenos Aires', 'Sao Paulo', 'Montevideo'],
+            correctAnswer: 'Rio de Janeiro'
+          },
+          {
+            question: 'What is the largest country in the world?',
+            answers: ['China', 'United States', 'Russia', 'Canada'],
+            correctAnswer: 'Russia'
+          },
+          {
+            question: 'What is the largest ocean in the world?',
+            answers: ['Atlantic', 'Indian', 'Arctic', 'Pacific'],
+            correctAnswer: 'Pacific'
+          }
+        ]
+      },
+      computed: {
+        quizComplete: function() {
+          return this.currentQuestionIndex >= this.questions.length;
+        }
+      },
+      methods: {
+        startQuiz: function() {
+          this.quizStarted = true;
+        },
+        checkAnswer: function() {
+          if (this.selectedAnswer === this.questions[this.currentQuestionIndex].correctAnswer) {
+            this.numCorrect++;
+          } else {
+            this.numWrong++;
+          }
+          this.selectedAnswer = null;
+          this.currentQuestionIndex++;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
